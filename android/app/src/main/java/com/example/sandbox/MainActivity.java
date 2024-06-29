@@ -1,19 +1,16 @@
 package com.example.sandbox;
 
-import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
-import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
-import android.content.Context;
-import android.view.KeyEvent;
-
 public class MainActivity extends FlutterActivity {
-    private static final String CHANNEL = "com.example.keyevents";
+    private static final String CHANNEL = "com.example.keyevents/sendKeyEvent";
+    private static final String TAG = "MainActivity"; // Tag for logging
 
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
@@ -22,9 +19,15 @@ public class MainActivity extends FlutterActivity {
                 .setMethodCallHandler(
                         (call, result) -> {
                             if (call.method.equals("sendKeyEvent")) {
-                                int keyCode = call.argument("keyCode");
-                                sendKeyEvent(keyCode);
-                                result.success(null);
+                                try {
+                                    int keyCode = Integer.parseInt(call.argument("keyCode").toString());
+                                    sendKeyEvent(keyCode);
+                                    Log.d(TAG, "Success"); // Log success message
+                                    result.success("Success"); // Send success message back to Flutter
+                                } catch (NumberFormatException e) {
+                                    Log.e(TAG, "Error parsing keyCode", e); // Log error
+                                    result.error("ERROR_PARSING_KEYCODE", "Failed to parse keyCode", null);
+                                }
                             } else {
                                 result.notImplemented();
                             }
@@ -35,5 +38,6 @@ public class MainActivity extends FlutterActivity {
     private void sendKeyEvent(int keyCode) {
         // Implement the logic to send a key event here
         // This might involve sending a broadcast or using an accessibility service
+        Log.d(TAG, "sendKeyEvent called with keyCode: " + keyCode); // Log method call
     }
 }

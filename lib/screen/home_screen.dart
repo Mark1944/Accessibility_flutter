@@ -10,7 +10,8 @@ class HomeScreen extends StatelessWidget {
     return  Scaffold(
       body: Center(
         child: ElevatedButton(onPressed: () {
-          AccessibilityService.sendText("Hello World");
+        AccessibilityService.sendText("123123");
+
           }, child: const Text("Send Keys")),
       ),
     );
