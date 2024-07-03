@@ -24,35 +24,34 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String receivedKey = "No key received";
+  static const platform = MethodChannel('com.example.keyevents/receiveKeyEvent');
 
-  static const platform =
-      MethodChannel('com.example.keyevents/receiveKeyEvent');
+  String _response = 'No response yet';
 
-  @override
-  void initState() {
-    super.initState();
-    _receiveKeyEvent();
-  }
-
-  void _receiveKeyEvent() {
-    platform.setMethodCallHandler((MethodCall call) async {
-      if (call.method == "receiveKeyEvent") {
-        receivedKey = await call.arguments['keyCode'];
-        print("$receivedKey===========");
-        setState(()  {
-
-        });
-      }
-    });
-  }
-  static const platforms = MethodChannel('com.example.keyevents/sendKeyEvent');
-
-  static Future<void> sendText(String text) async {
+  Future<void> _receiveKeyEvent() async {
     try {
-      await platforms.invokeMethod('sendKeyEvent', {'keyCode': text});
+      final String result = await platform.invokeMethod('receiveKeyEvent');
+      setState(() {
+        _response = result;
+        print(result);
+      });
     } on PlatformException catch (e) {
-      print("Failed to send text: '${e.message}'.");
+      setState(() {
+        _response = "Failed to receive key event: '${e.message}'.";
+      });
+    }
+  }
+
+  Future<void> _sendKeyEvent(int keyCode) async {
+    try {
+      final String result = await platform.invokeMethod('sendKeyEvent', {'keyCode': keyCode});
+      setState(() {
+        _response = result;
+      });
+    } on PlatformException catch (e) {
+      setState(() {
+        _response = "Failed to send key event: '${e.message}'.";
+      });
     }
   }
 
@@ -63,16 +62,15 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Home page = $receivedKey"),
-            const SizedBox(
-              height: 10,
+            Text('Response: $_response'),
+            ElevatedButton(
+              onPressed: _receiveKeyEvent,
+              child: Text('Receive Key Event'),
             ),
             ElevatedButton(
-                onPressed: () {
-                  _receiveKeyEvent();
-                  // sendText("123456");
-                },
-                child: const Text("Check"))
+              onPressed: () => _sendKeyEvent(42), // Replace with desired keyCode
+              child: Text('Send Key Event'),
+            ),
           ],
         ),
       ),

@@ -16,7 +16,7 @@ public class MainActivity extends FlutterActivity  {
     private static final String CHANNEL = "com.example.keyevents/receiveKeyEvent";
     private static final String TAG = "MainActivity"; // Tag for logging
     private KeyEventReceiver mReceiver = new KeyEventReceiver();
-    private static final String ACTION_CUSTOM_BROADCAST = "com.example.sandbox_receiver";
+    private static final String ACTION_CUSTOM_BROADCAST = "com.example.sandbox";
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
         super.configureFlutterEngine(flutterEngine);
