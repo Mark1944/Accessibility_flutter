@@ -1,5 +1,6 @@
 package com.example.sandbox;
 
+import android.content.Intent;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -39,5 +40,13 @@ public class MainActivity extends FlutterActivity {
         // Implement the logic to send a key event here
         // This might involve sending a broadcast or using an accessibility service
         Log.d(TAG, "sendKeyEvent called with keyCode: " + keyCode); // Log method call
+       /* Intent intent = new Intent();
+        intent.setAction("com.example.keyevents.KEY_EVENT");
+        intent.putExtra("keycode", keyCode);
+        sendBroadcast(intent, "my.app.PERMISSION");*/
+        Intent intent = new Intent();
+        intent.setAction("com.example.sandbox");
+        intent.putExtra("keycode", String.valueOf(keyCode));
+        sendBroadcast(intent, "com.example.sandbox");
     }
 }

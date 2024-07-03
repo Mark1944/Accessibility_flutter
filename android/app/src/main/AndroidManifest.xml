@@ -1,4 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <permission android:name="com.example.sandbox" />
     <application
         android:label="sandbox"
         android:name="${applicationName}"
