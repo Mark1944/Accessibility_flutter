@@ -1,21 +1,23 @@
 <manifest xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="com.example.sandbox"/>
     <application
         android:label="sandbox_receiver"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <receiver android:name=".KeyEventReceiver"
             android:exported="true"
-            android:permission="TODO"
-            tools:ignore="ExportedReceiver">
+            android:enabled="true"
+            android:permission="com.example.sandbox">
             <intent-filter>
-                <action android:name="com.example.keyevents.KEY_EVENT" />
+                <action android:name="com.example.sandbox" />
             </intent-filter>
         </receiver>
         <service
             android:name=".KeyEventService"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
-            android:exported="true">
+            android:exported="true"
+            >
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>

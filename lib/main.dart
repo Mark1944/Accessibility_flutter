@@ -63,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Text("Home page = $receivedKey"),
+            Text("Home page = $receivedKey"),
             const SizedBox(
               height: 10,
             ),

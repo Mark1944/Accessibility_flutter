@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.Objects;
 
@@ -12,12 +13,9 @@ public class KeyEventReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (Objects.requireNonNull(intent.getAction()).equals("com.example.keyevents.KEY_EVENT")) {
-            int keyCode = intent.getIntExtra("keyCode", -1);
-            if (keyCode != -1) {
-                Log.d(TAG, "Received key event: " + keyCode);
-                // Handle the received key event here
-            }
-        }
+        String data = intent.getStringExtra("keycode");
+        Log.i("BR" ,"Data received:  " + data);
+        //Toast.makeText(context, "Action: " + intent.getAction(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "Data received: " + data, Toast.LENGTH_SHORT).show();
     }
 }
