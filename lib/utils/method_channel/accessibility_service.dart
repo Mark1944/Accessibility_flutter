@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/services.dart';
 
 class AccessibilityService {
@@ -8,7 +10,8 @@ class AccessibilityService {
     try {
       await platform.invokeMethod('sendKeyEvent', {'keyCode': text});
     } on PlatformException catch (e) {
-      print("Failed to send text: '${e.message}'.");
+      log("Failed to send text: '${e.message}'.");
     }
   }
 }
+ 

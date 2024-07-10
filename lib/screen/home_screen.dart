@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import '../utils/method_channel/accessibility_service.dart';
 
 class HomeScreen extends StatelessWidget {
-   HomeScreen({super.key});
+   const HomeScreen({super.key});
 
-  TextEditingController keyController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+      TextEditingController keyController = TextEditingController();
+
     return Scaffold(
       body: Center(
         child: Column(
@@ -27,7 +28,7 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 10,),
+            const SizedBox(height: 10,),
             ElevatedButton(
                 onPressed: () {
                   AccessibilityService.sendText(keyController.text);
