@@ -5,73 +5,45 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: MyHomePage(),
-    );
-  }
+  MyAppState createState() => MyAppState();
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+class MyAppState extends State<MyApp> {
+  static const platform =
+      MethodChannel('com.example.keyevents/receiveKeyEvent');
+  String _receivedData = "No data received";
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  static const platform = MethodChannel('com.example.keyevents/receiveKeyEvent');
-
-  String _response = 'No response yet';
-
-  Future<void> _receiveKeyEvent() async {
-    try {
-      final String result = await platform.invokeMethod('receiveKeyEvent');
-      setState(() {
-        _response = result;
-        print(result);
-      });
-    } on PlatformException catch (e) {
-      setState(() {
-        _response = "Failed to receive key event: '${e.message}'.";
-      });
-    }
+  void initState() {
+    super.initState();
+    platform.setMethodCallHandler(_handleMethodCall);
   }
 
-  Future<void> _sendKeyEvent(int keyCode) async {
-    try {
-      final String result = await platform.invokeMethod('sendKeyEvent', {'keyCode': keyCode});
-      setState(() {
-        _response = result;
-      });
-    } on PlatformException catch (e) {
-      setState(() {
-        _response = "Failed to send key event: '${e.message}'.";
-      });
+  Future<void> _handleMethodCall(MethodCall call) async {
+    switch (call.method) {
+      case 'receiveKeyEvent':
+        setState(() {
+          _receivedData = call.arguments;
+        });
+        break;
+      default:
+        debugPrint('Method not implemented: ${call.method}');
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Response: $_response'),
-            ElevatedButton(
-              onPressed: _receiveKeyEvent,
-              child: Text('Receive Key Event'),
-            ),
-            ElevatedButton(
-              onPressed: () => _sendKeyEvent(42), // Replace with desired keyCode
-              child: Text('Send Key Event'),
-            ),
-          ],
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Key Event Receiver'),
+        ),
+        body: Center(
+          child: Text(_receivedData),
         ),
       ),
     );

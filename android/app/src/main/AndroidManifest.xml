@@ -13,7 +13,7 @@
                 <action android:name="com.example.sandbox" />
             </intent-filter>
         </receiver>
-        <service
+        <!-- <service
             android:name=".KeyEventService"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
             android:exported="true"
@@ -25,7 +25,7 @@
             <meta-data
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility_service_config" />
-        </service>
+        </service> -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
