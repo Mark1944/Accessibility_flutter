@@ -1,49 +1,45 @@
+// import 'package:flutter/material.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  MyAppState createState() => MyAppState();
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      home: MyHomePage(),
+    );
+  }
 }
 
-class MyAppState extends State<MyApp> {
-  static const platform =
-      MethodChannel('com.example.keyevents/receiveKeyEvent');
-  String _receivedData = "No data received";
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
 
   @override
-  void initState() {
-    super.initState();
-    platform.setMethodCallHandler(_handleMethodCall);
-  }
+  MyHomePageState createState() => MyHomePageState();
+}
 
-  Future<void> _handleMethodCall(MethodCall call) async {
-    switch (call.method) {
-      case 'receiveKeyEvent':
-        setState(() {
-          _receivedData = call.arguments;
-        });
-        break;
-      default:
-        debugPrint('Method not implemented: ${call.method}');
-    }
-  }
+class MyHomePageState extends State<MyHomePage> {
+  final TextEditingController _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Key Event Receiver'),
-        ),
-        body: Center(
-          child: Text(_receivedData),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('App B'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: TextField(
+          controller: _controller,
+          decoration: const InputDecoration(
+            hintText: 'Enter text here',
+          ),
         ),
       ),
     );
