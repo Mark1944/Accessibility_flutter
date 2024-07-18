@@ -172,7 +172,7 @@ public class MyAccessibilityService extends AccessibilityService {
    
 
         sendTextToApp(rootNode, username, "Username");
-        sendTextToApp(rootNode, password, "Password");
+        // sendTextToApp(rootNode, password, "Password");
         }
     
   
@@ -187,20 +187,32 @@ public class MyAccessibilityService extends AccessibilityService {
 
 
     private void sendTextToApp(AccessibilityNodeInfo rootNode,String text, String labelText) {
-    findAndSetText(rootNode, text, "com.example.sandbox_receiver:id/" + labelText);
+    findAndSetText(rootNode, text, labelText);
 }
 
 private void findAndSetText(AccessibilityNodeInfo node, String text, String fullViewId) {
     if (node == null) return;
 
+            CharSequence contentDescription = node.getContentDescription();
+
+                    Log.d(TAG, "contentDescription  contentDescription " + contentDescription);
+                                        Log.d(TAG, "node  node " + node);
+
+
     String viewIdResourceName = node.getViewIdResourceName();
+                    Log.d(TAG, "Text  viewIdResourceName " + viewIdResourceName);
+                                        Log.d(TAG, "Text  fullViewId " + fullViewId);
+
+
     if (viewIdResourceName != null && viewIdResourceName.equals(fullViewId)) {
         Bundle arguments = new Bundle();
         arguments.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, text);
         node.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, arguments);
         Log.d(TAG, "Text set in input field with ID: " + fullViewId);
         return;
-    }else{
+    }
+    
+    else{
                 Log.d(TAG, "Text  None");
 
     }
