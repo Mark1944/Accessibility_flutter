@@ -25,21 +25,35 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<MyHomePage> {
-  final TextEditingController _controller = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('App B'),
+        title: const Text('Login Screen'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: TextField(
-          controller: _controller,
-          decoration: const InputDecoration(
-            hintText: 'Enter text here',
-          ),
+        child: Column(
+          children: [
+            TextFormField(
+              
+              key: const Key('username_field'),
+              controller: _usernameController,
+              decoration: const InputDecoration(labelText: 'Username'),
+
+              
+            ),
+            
+            TextField(
+              key: const Key('password_field'),
+              controller: _passwordController,
+              decoration: const InputDecoration(labelText: 'Password'),
+              obscureText: true,
+            ),
+          ],
         ),
       ),
     );
