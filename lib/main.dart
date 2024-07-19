@@ -39,8 +39,9 @@ class MyHomePageState extends State<MyHomePage> {
         child: Column(
           children: [
             TextFormField(
+              autofocus: true,
               
-              key: const Key('username_field'),
+              key: const Key('Username'),
               controller: _usernameController,
               decoration: const InputDecoration(labelText: 'Username'),
 
@@ -48,10 +49,10 @@ class MyHomePageState extends State<MyHomePage> {
             ),
             
             TextField(
-              key: const Key('password_field'),
+              key: const Key('Password'),
               controller: _passwordController,
               decoration: const InputDecoration(labelText: 'Password'),
-              obscureText: true,
+              // obscureText: true,
             ),
           ],
         ),
