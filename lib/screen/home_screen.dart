@@ -1,42 +1,99 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
-import '../utils/method_channel/accessibility_service.dart';
+class HomeScreen extends HookWidget {
+  final TextEditingController _usernameController =
+      TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
-class HomeScreen extends StatelessWidget {
-   const HomeScreen({super.key});
-
+  HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-      TextEditingController keyController = TextEditingController();
+    useOnAppLifecycleStateChange((pref, state) {
+      log("state  $state");
+      if (state == AppLifecycleState.hidden) {
+        Future.delayed(const Duration(seconds: 5), () {
+          log('Hello after 5 seconds');
 
+          if (_usernameController.text != "") {
+            sendAccessibilityData(
+              _usernameController.text,
+              _passwordController.text,
+            );
+          }
+        });
+
+        Future.delayed(const Duration(seconds: 10), () {
+          log('Hello after 10 seconds');
+
+          tabButton();
+        });
+      }
+    });
     return Scaffold(
-      body: Center(
+      appBar: AppBar(
+        title: const Text('App A'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(
-              width:300,
-              child: TextFormField(
-                keyboardType: TextInputType.number,
-                controller: keyController,
-                decoration: InputDecoration(
-                  hintText: "Key",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
+            TextField(
+              key: const Key('username_field'),
+              controller: _usernameController,
+              decoration: const InputDecoration(labelText: 'Username'),
             ),
-            const SizedBox(height: 10,),
+            TextField(
+              controller: _passwordController,
+              decoration: const InputDecoration(labelText: 'Password'),
+              obscureText: true,
+            ),
             ElevatedButton(
-                onPressed: () {
-                  AccessibilityService.sendText(keyController.text);
-                },
-                child: const Text("Send Keys")),
+              onPressed: () {
+                // Future.delayed(const Duration(seconds: 5), () {
+                //   log('Hello after 2 seconds');
+
+                //   sendAccessibilityData(
+                //     _usernameController.text,
+                //     _passwordController.text,
+                //   );
+                // });
+              },
+              child: const Text('Send Data to App B'),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> sendAccessibilityData(String username, String password) async {
+    const platform = MethodChannel('com.example.sandbox/accessibility');
+    // static const platform = MethodChannel('com.example.sandbox/accessibility');
+
+    try {
+      await platform.invokeMethod('sendText', {
+        'username': username,
+        'password': password,
+      });
+    } on PlatformException catch (e) {
+      log("Failed to send data: '${e.message}'.");
+    }
+  }
+
+  Future<void> tabButton() async {
+    const platform = MethodChannel('com.example.sandbox/accessibility');
+
+    try {
+      await platform.invokeMethod('tabPress', {
+        'buttonPress': true,
+      });
+    } on PlatformException catch (e) {
+      log("Failed to send data: '${e.message}'.");
+    }
   }
 }

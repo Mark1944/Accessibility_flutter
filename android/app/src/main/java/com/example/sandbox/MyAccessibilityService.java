@@ -1,8 +1,89 @@
 package com.example.sandbox;
 
 
+import android.accessibilityservice.AccessibilityService;
+import android.accessibilityservice.AccessibilityServiceInfo;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityNodeInfo;
+
+public class MyAccessibilityService extends AccessibilityService {
+    private static final String TAG = "MyAccessibilityService";
+    private String username;
+    private String password;
+
+    @Override
+    public void onServiceConnected() {
+        super.onServiceConnected();
+        AccessibilityServiceInfo info = new AccessibilityServiceInfo();
+        info.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED | AccessibilityEvent.TYPE_VIEW_FOCUSED | AccessibilityEvent.TYPE_VIEW_CLICKED | AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED;
+        info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC;
+        setServiceInfo(info);
+        Log.d(TAG, "Accessibility Service Connected");
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent != null) {
+            username = intent.getStringExtra("username");
+            password = intent.getStringExtra("password");
+            Log.d(TAG, "Received username: " + username + ", password: " + password);
+        }
+        return START_STICKY;
+    }
+
+    @Override
+    public void onAccessibilityEvent(AccessibilityEvent event) {
+        Log.d(TAG, "Event: " + event.toString());
+        AccessibilityNodeInfo rootNode = getRootInActiveWindow();
+        if (rootNode != null) {
+            AccessibilityNodeInfo focusedNode = findFocusedNode(rootNode);
+            if (focusedNode != null) {
+                Log.d(TAG, "Focused node: " + focusedNode.toString());
+                if (username != null && password != null) {
+                    setTextInFocusedNode(focusedNode, username);
+                    // setTextInFocusedNode(focusedNode, password);
+                }
+            } else {
+                Log.d(TAG, "No focused node found");
+            }
+        } else {
+            Log.d(TAG, "Root node is null");
+        }
+    }
+
+    @Override
+    public void onInterrupt() {
+    }
+
+    private AccessibilityNodeInfo findFocusedNode(AccessibilityNodeInfo node) {
+        if (node == null) return null;
+        if (node.isFocused()) {
+            return node;
+        }
+        for (int i = 0; i < node.getChildCount(); i++) {
+            AccessibilityNodeInfo result = findFocusedNode(node.getChild(i));
+            if (result != null) {
+                return result;
+            }
+        }
+        return null;
+    }
+
+    private void setTextInFocusedNode(AccessibilityNodeInfo node, String text) {
+        if (node != null && "android.widget.EditText".contentEquals(node.getClassName())) {
+            Bundle arguments = new Bundle();
+            arguments.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, text);
+            node.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, arguments);
+            Log.d(TAG, "Text set in focused input field: " + text);
+        }
+    }
+}
 
 // import android.accessibilityservice.AccessibilityService;
+// import android.accessibilityservice.AccessibilityServiceInfo;
 // import android.content.Intent;
 // import android.os.Bundle;
 // import android.util.Log;
@@ -11,39 +92,29 @@ package com.example.sandbox;
 
 // import java.util.List;
 
-
-// import android.accessibilityservice.AccessibilityServiceInfo;
-// import android.widget.EditText;
-
-
 // public class MyAccessibilityService extends AccessibilityService {
-
-//     private static final String TAG = "AccessibilityService";
-
-//     @Override
-//     public void onCreate() {
-//         super.onCreate();
-//         Log.d(TAG, "Accessibility Service Created");
-//     }
+//     private static final String TAG = "MyAccessibilityService";
+//     private String username;
+//     private String password;
+//     private boolean buttonPressed = false;
 
 //     @Override
 //     public void onServiceConnected() {
 //         super.onServiceConnected();
 //         AccessibilityServiceInfo info = new AccessibilityServiceInfo();
-//         info.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED | AccessibilityEvent.TYPE_VIEW_FOCUSED;
-//         info.feedbackType = AccessibilityServiceInfo.FEEDBACK_SPOKEN;
-//         info.notificationTimeout = 100;
+//         info.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED | AccessibilityEvent.TYPE_VIEW_FOCUSED | AccessibilityEvent.TYPE_VIEW_CLICKED | AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED;
+//         info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC;
 //         setServiceInfo(info);
+//         Log.d(TAG, "Accessibility Service Connected");
 //     }
 
 //     @Override
 //     public int onStartCommand(Intent intent, int flags, int startId) {
 //         if (intent != null) {
-//             String username = intent.getStringExtra("username");
-//             String password = intent.getStringExtra("password");
-//             if (username != null && password != null) {
-//                 sendTextToApp(username, password);
-//             }
+//             username = intent.getStringExtra("username");
+//             password = intent.getStringExtra("password");
+//             buttonPressed = intent.getBooleanExtra("buttonPressed", false);
+//             Log.d(TAG, "Received username: " + username + ", password: " + password + ", buttonPressed: " + buttonPressed);
 //         }
 //         return START_STICKY;
 //     }
@@ -51,177 +122,76 @@ package com.example.sandbox;
 //     @Override
 //     public void onAccessibilityEvent(AccessibilityEvent event) {
 //         Log.d(TAG, "Event: " + event.toString());
-//         // Implement interaction logic here if needed
-//     }   
-
-//     @Override
-//     public void onInterrupt() {
-//         // Called when the accessibility service is interrupted
-//         Log.d(TAG, "Accessibility Service Interrupted");
-//     }
-
-//     public void sendTextToApp(String username, String password) {
-
-
-//                                     Log.d(TAG, "Accessibility Service Created send Here Here " + username + " " + password);
-
-
 //         AccessibilityNodeInfo rootNode = getRootInActiveWindow();
-
-//                 // String viewIdResourceName = rootNode.getViewIdResourceName();
-
-
-//                                     Log.d(TAG, "Accessibility Service Created send Here" + username + " " + password);
-//                                                                         Log.d(TAG, "Accessibility Service Created send Here " + rootNode);
-
-//                                                                                                                                                 // Log.d(TAG, "Accessibility viewIdResourceName Created send Here " + viewIdResourceName);
-
-
-
-
-
 //         if (rootNode != null) {
-
-//             // Find the username field and set text
-//             // List<AccessibilityNodeInfo> usernameFields = rootNode.findAccessibilityNodeInfosByViewId("com.example.sandbox_receiver:id/username_field");
-//                         List<AccessibilityNodeInfo> usernameFields = rootNode.findAccessibilityNodeInfosByText("Username");
-
-
-//                             Log.d(TAG, "Accessibility Service Created usernameFields" + usernameFields);
-
-//             if (!usernameFields.isEmpty()) {
-//                 AccessibilityNodeInfo usernameField = usernameFields.get(0);
-//                 Bundle arguments = new Bundle();
-//                 arguments.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, username);
-//                 usernameField.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, arguments);
+//             if (buttonPressed) {
+//                 buttonPressed = false; // Reset the flag
+//                 handleButtonPress(rootNode);
 //             }
-
-//             // Find the password field and set text
-//             List<AccessibilityNodeInfo> passwordFields = rootNode.findAccessibilityNodeInfosByViewId("com.example.sandbox_receiver:id/password_field");
-//             if (!passwordFields.isEmpty()) {
-//                 AccessibilityNodeInfo passwordField = passwordFields.get(0);
-//                 Bundle arguments = new Bundle();
-//                 arguments.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, password);
-//                 passwordField.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, arguments);
-//             }
+//         } else {
+//             Log.d(TAG, "Root node is null");
 //         }
 //     }
 
- 
+//     @Override
+//     public void onInterrupt() {
+//     }
+
+//     private void handleButtonPress(AccessibilityNodeInfo rootNode) {
+//         AccessibilityNodeInfo focusedNode = findFocusedNode(rootNode);
+//         if (focusedNode != null) {
+//             Log.d(TAG, "Focused node: " + focusedNode.toString());
+//             AccessibilityNodeInfo nextNode = findNextEditableNode(rootNode, focusedNode);
+//             if (nextNode != null) {
+//                 focusNode(nextNode);
+//                 Log.d(TAG, "Focused next node: " + nextNode.toString());
+//             } else {
+//                 Log.d(TAG, "No next editable node found");
+//             }
+//         } else {
+//             Log.d(TAG, "No focused node found");
+//         }
+//     }
+
+//     private AccessibilityNodeInfo findFocusedNode(AccessibilityNodeInfo node) {
+//         if (node == null) return null;
+//         if (node.isFocused()) {
+//             return node;
+//         }
+//         for (int i = 0; i < node.getChildCount(); i++) {
+//             AccessibilityNodeInfo result = findFocusedNode(node.getChild(i));
+//             if (result != null) {
+//                 return result;
+//             }
+//         }
+//         return null;
+//     }
+
+//     private AccessibilityNodeInfo findNextEditableNode(AccessibilityNodeInfo rootNode, AccessibilityNodeInfo currentNode) {
+//         boolean foundCurrent = false;
+//         return findNextEditableNodeRecursive(rootNode, currentNode, foundCurrent);
+//     }
+
+//     private AccessibilityNodeInfo findNextEditableNodeRecursive(AccessibilityNodeInfo node, AccessibilityNodeInfo currentNode, boolean foundCurrent) {
+//         if (node == null) return null;
+//         if (node.equals(currentNode)) {
+//             foundCurrent = true;
+//         } else if (foundCurrent && "android.widget.EditText".contentEquals(node.getClassName())) {
+//             return node;
+//         }
+//         for (int i = 0; i < node.getChildCount(); i++) {
+//             AccessibilityNodeInfo result = findNextEditableNodeRecursive(node.getChild(i), currentNode, foundCurrent);
+//             if (result != null) {
+//                 return result;
+//             }
+//         }
+//         return null;
+//     }
+
+//     private void focusNode(AccessibilityNodeInfo node) {
+//         if (node != null && "android.widget.EditText".contentEquals(node.getClassName())) {
+//             node.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
+//             Log.d(TAG, "Node focused: " + node.toString());
+//         }
+//     }
 // }
-
-import android.accessibilityservice.AccessibilityService;
-import android.accessibilityservice.AccessibilityServiceInfo;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.accessibility.AccessibilityEvent;
-import android.view.accessibility.AccessibilityNodeInfo;
-import android.content.Intent;
-
-import java.util.List;
-
-public class MyAccessibilityService extends AccessibilityService {
-    private static final String TAG = "MyAccessibilityService";
-    private String username;
-    private String password;
-
-
-   @Override
-    public void onServiceConnected() {
-        super.onServiceConnected();
-        AccessibilityServiceInfo info = new AccessibilityServiceInfo();
-        info.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED | AccessibilityEvent.TYPE_VIEW_FOCUSED;
-        info.feedbackType = AccessibilityServiceInfo.FEEDBACK_SPOKEN;
-        info.notificationTimeout = 100;
-        setServiceInfo(info);
-    }
-
-    @Override
-    public void onAccessibilityEvent(AccessibilityEvent event) {
-        Log.d(TAG, "Event: " + event.toString());
-        AccessibilityNodeInfo rootNode = getRootInActiveWindow();
-        if (rootNode != null) {
-            logAllNodes(rootNode);
-
-            
-        }
-    }
-
-    @Override
-    public void onInterrupt() {
-    }
-
-     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent != null) {
-                    AccessibilityNodeInfo rootNode = getRootInActiveWindow();
-
-            username = intent.getStringExtra("username");   
-            password = intent.getStringExtra("password");
-            Log.d(TAG, "Received username: " + username + ", password: " + password);
-
-                                    handleReceivedData(rootNode);
-
-        }
-        return START_STICKY;
-    }
-
-
- private void handleReceivedData(AccessibilityNodeInfo rootNode) {
-
-   
-
-        sendTextToApp(rootNode, username, "Username");
-        // sendTextToApp(rootNode, password, "Password");
-        }
-    
-  
-
-    private void logAllNodes(AccessibilityNodeInfo node) {
-        if (node == null) return;
-        Log.d(TAG, "Node: " + node.toString());
-        for (int i = 0; i < node.getChildCount(); i++) {
-            logAllNodes(node.getChild(i));
-        }
-    }
-
-
-    private void sendTextToApp(AccessibilityNodeInfo rootNode,String text, String labelText) {
-    findAndSetText(rootNode, text, labelText);
-}
-
-private void findAndSetText(AccessibilityNodeInfo node, String text, String fullViewId) {
-    if (node == null) return;
-
-            CharSequence contentDescription = node.getContentDescription();
-
-                    Log.d(TAG, "contentDescription  contentDescription " + contentDescription);
-                                        Log.d(TAG, "node  node " + node);
-
-
-    String viewIdResourceName = node.getViewIdResourceName();
-                    Log.d(TAG, "Text  viewIdResourceName " + viewIdResourceName);
-                                        Log.d(TAG, "Text  fullViewId " + fullViewId);
-
-
-    if (viewIdResourceName != null && viewIdResourceName.equals(fullViewId)) {
-        Bundle arguments = new Bundle();
-        arguments.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, text);
-        node.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, arguments);
-        Log.d(TAG, "Text set in input field with ID: " + fullViewId);
-        return;
-    }
-    
-    else{
-                Log.d(TAG, "Text  None");
-
-    }
-
-    for (int i = 0; i < node.getChildCount(); i++) {
-        findAndSetText(node.getChild(i), text, fullViewId);
-    }
-}
-
-
-    
-}
