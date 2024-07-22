@@ -28,11 +28,24 @@ public class MainActivity extends FlutterActivity {
                         intent.putExtra("keySent", keySent);
                         startService(intent);
 
-                         Log.d(TAG, "Accessibility Service Createdsdd" + keySent);
+                         Log.d(TAG, "Accessibility Service Createdsdd " + keySent);
 
                         result.success("Data sent to Accessibility Service");
                     } 
-                    
+                    // else if (call.method.equals("tabPress")) {
+                      
+                    //                             Boolean buttonPress = call.argument("buttonPress");
+
+
+
+
+                    //     Intent intent = new Intent(this, ButtonAccessibilityService.class);
+                    //     intent.putExtra("buttonPress", buttonPress);
+                    //     startService(intent);
+                    //      Log.d(TAG, "buttonPress buttonPress buttonPress" + buttonPress );
+
+                    //     result.success("Button Pressed");
+                    // } 
                     
                     else {
                         result.notImplemented();

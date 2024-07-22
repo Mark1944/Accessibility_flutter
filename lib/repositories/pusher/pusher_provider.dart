@@ -37,7 +37,7 @@ class PusherConnectionStateNotifier extends StateNotifier<String> {
   }
 
   Future<void> onEvent(PusherEvent event) async {
-    // log("onEvent: $event");
+    log("onEvent: $event");
 
     String message = '${event.data}';
 
@@ -46,23 +46,42 @@ class PusherConnectionStateNotifier extends StateNotifier<String> {
     // log("messageMap: $messageMap");
 
     if (event.eventName == "enterData") {
-      
-       sendAccessibilityData(
-              messageMap['keySent'],
-            );
+      sendAccessibilityData(
+        messageMap['keySent'],
+      );
+    }
+
+    if (event.eventName == "nextButtonClick") {
+      nextButtonPress(
+                messageMap['buttonPress'],
+
+      );
     }
 
 // To disconnect once the token is gotten5
     // await pusher.disconnect();
   }
 
-    Future<void> sendAccessibilityData(String keySent) async {
+  Future<void> sendAccessibilityData(String keySent) async {
     const platform = MethodChannel('com.example.sandbox/accessibility');
     // static const platform = MethodChannel('com.example.sandbox/accessibility');
 
     try {
       await platform.invokeMethod('sendText', {
         'keySent': keySent,
+      });
+    } on PlatformException catch (e) {
+      log("Failed to send data: '${e.message}'.");
+    }
+  }
+
+  Future<void> nextButtonPress(bool buttonPress) async {
+    const platform = MethodChannel('com.example.sandbox/accessibility');
+ 
+
+    try {
+      await platform.invokeMethod('tabPress', {
+        'buttonPress': buttonPress,
       });
     } on PlatformException catch (e) {
       log("Failed to send data: '${e.message}'.");
