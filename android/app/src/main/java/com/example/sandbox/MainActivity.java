@@ -21,32 +21,18 @@ public class MainActivity extends FlutterActivity {
             .setMethodCallHandler(
                 (call, result) -> {
                     if (call.method.equals("sendText")) {
-                        String username = call.argument("username");
-                        String password = call.argument("password");
+                        String keySent = call.argument("keySent");
 
 
                         Intent intent = new Intent(this, MyAccessibilityService.class);
-                        intent.putExtra("username", username);
-                        intent.putExtra("password", password);
+                        intent.putExtra("keySent", keySent);
                         startService(intent);
+
+                         Log.d(TAG, "Accessibility Service Createdsdd" + keySent);
 
                         result.success("Data sent to Accessibility Service");
                     } 
-                    else if (call.method.equals("tabPress")) {
-
-
-                                                Boolean buttonPress = call.argument("buttonPress");
-
-
-                         Log.d(TAG, "buttonPress buttonPress buttonPress" + buttonPress );
-
-
-                        Intent intent = new Intent(this, ButtonAccessibilityService.class);
-                        intent.putExtra("buttonPress", buttonPress);
-                        startService(intent);
-
-                        result.success("Button Pressed");
-                    } 
+                    
                     
                     else {
                         result.notImplemented();

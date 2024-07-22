@@ -13,27 +13,27 @@ class HomeScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    useOnAppLifecycleStateChange((pref, state) {
-      log("state  $state");
-      if (state == AppLifecycleState.hidden) {
-        Future.delayed(const Duration(seconds: 5), () {
-          log('Hello after 5 seconds');
+    // useOnAppLifecycleStateChange((pref, state) {
+    //   log("state  $state");
+    //   if (state == AppLifecycleState.hidden) {
+    //     Future.delayed(const Duration(seconds: 5), () {
+    //       log('Hello after 5 seconds');
 
-          if (_usernameController.text != "") {
-            sendAccessibilityData(
-              _usernameController.text,
-              _passwordController.text,
-            );
-          }
-        });
+    //       if (_usernameController.text != "") {
+    //         sendAccessibilityData(
+    //           _usernameController.text,
+    //           _passwordController.text,
+    //         );
+    //       }
+    //     });
 
-        Future.delayed(const Duration(seconds: 10), () {
-          log('Hello after 10 seconds');
+    //     // Future.delayed(const Duration(seconds: 10), () {
+    //     //   log('Hello after 10 seconds');
 
-          tabButton();
-        });
-      }
-    });
+    //     //   tabButton();
+    //     // });
+    //   }
+    // });
     return Scaffold(
       appBar: AppBar(
         title: const Text('App A'),
@@ -85,15 +85,5 @@ class HomeScreen extends HookWidget {
     }
   }
 
-  Future<void> tabButton() async {
-    const platform = MethodChannel('com.example.sandbox/accessibility');
 
-    try {
-      await platform.invokeMethod('tabPress', {
-        'buttonPress': true,
-      });
-    } on PlatformException catch (e) {
-      log("Failed to send data: '${e.message}'.");
-    }
-  }
 }
