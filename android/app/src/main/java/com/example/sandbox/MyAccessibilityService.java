@@ -130,7 +130,16 @@ public class MyAccessibilityService extends AccessibilityService {
     }
 
     private void setTextInFocusedNode(AccessibilityNodeInfo node, String text) {
+
+        //Todo: Look ath this here, how to put one work or one text and also add spacing
         Log.d(TAG, "node node node: " + node);
+                Log.d(TAG, "text.length(): " + text.length());
+
+
+        if(text.length() > 1){
+
+setFullTextInFocusedNode(node, text);
+        }else{
         if (node != null && "android.widget.EditText".contentEquals(node.getClassName())) {
             // Use StringBuilder to accumulate the text to be set
             final CharSequence currentText = node.getText();
@@ -169,6 +178,16 @@ public class MyAccessibilityService extends AccessibilityService {
             }
         } else {
             Log.d(TAG, "No node Found or Not an EditText");
+        }
+        }
+    }
+
+    private void setFullTextInFocusedNode(AccessibilityNodeInfo node, String text) {
+        if (node != null && "android.widget.EditText".contentEquals(node.getClassName())) {
+            Bundle arguments = new Bundle();
+            arguments.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, text);
+            node.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, arguments);
+            Log.d(TAG, "Text set in focused input field: " + text);
         }
     }
 
