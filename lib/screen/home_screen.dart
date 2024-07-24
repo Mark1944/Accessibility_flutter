@@ -5,11 +5,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class HomeScreen extends HookWidget {
-  final TextEditingController _usernameController =
-      TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  // final TextEditingController _usernameController = TextEditingController();
+  // final TextEditingController _passwordController = TextEditingController();
 
-  HomeScreen({super.key});
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -36,35 +35,37 @@ class HomeScreen extends HookWidget {
     // });
     return Scaffold(
       appBar: AppBar(
-        title: const Text('App A'),
+        title: const Text('App With Accessibility'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: const Padding(
+        padding: EdgeInsets.all(16.0),
         child: Column(
           children: [
-            TextField(
-              key: const Key('username_field'),
-              controller: _usernameController,
-              decoration: const InputDecoration(labelText: 'Username'),
-            ),
-            TextField(
-              controller: _passwordController,
-              decoration: const InputDecoration(labelText: 'Password'),
-              obscureText: true,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                // Future.delayed(const Duration(seconds: 5), () {
-                //   log('Hello after 2 seconds');
+            Text(
+                "Make sure that you have allowes accessibility access permissions"),
+            // TextField(
+            //   key: const Key('username_field'),
+            //   controller: _usernameController,
+            //   decoration: const InputDecoration(labelText: 'Username'),
+            // ),
+            // TextField(
+            //   controller: _passwordController,
+            //   decoration: const InputDecoration(labelText: 'Password'),
+            //   obscureText: true,
+            // ),
+            // ElevatedButton(
+            //   onPressed: () {
+            //     // Future.delayed(const Duration(seconds: 5), () {
+            //     //   log('Hello after 2 seconds');
 
-                //   sendAccessibilityData(
-                //     _usernameController.text,
-                //     _passwordController.text,
-                //   );
-                // });
-              },
-              child: const Text('Send Data to App B'),
-            ),
+            //     //   sendAccessibilityData(
+            //     //     _usernameController.text,
+            //     //     _passwordController.text,
+            //     //   );
+            //     // });
+            //   },
+            //   child: const Text('Send Data to App B'),
+            // ),
           ],
         ),
       ),
@@ -84,6 +85,4 @@ class HomeScreen extends HookWidget {
       log("Failed to send data: '${e.message}'.");
     }
   }
-
-
 }
