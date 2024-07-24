@@ -126,10 +126,15 @@ public class MyAccessibilityService extends AccessibilityService {
     private void setNodeText(AccessibilityNodeInfo rootNode, String text) {
                                  Log.d(TAG, "Root node is null " + text);
 
+                                                                  Log.d(TAG, "Rootnode  " + rootNode);
+
+
         if (rootNode == null) return;
 
         for (int i = 0; i < rootNode.getChildCount(); i++) {
             AccessibilityNodeInfo childNode = rootNode.getChild(i);
+                                                                              Log.d(TAG, "Child Node  " + childNode);
+
             if (childNode != null) {
                 if (childNode.isEditable()) {
                      CharSequence existingText = childNode.getText();
@@ -138,7 +143,7 @@ public class MyAccessibilityService extends AccessibilityService {
                     Bundle arguments = new Bundle();
                     arguments.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, text);
                     childNode.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, arguments);
-                    return; // Assume we only need to set text in the first editable field found
+                    return; 
                 }
                 setNodeText(childNode, text);
             }
