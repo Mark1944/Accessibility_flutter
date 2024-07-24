@@ -24,7 +24,7 @@ class MyApp extends HookConsumerWidget {
           .watch(pusherConnectionStateProvider.notifier)
           .connect(channelName: "stb-B81sv97OuVZRNGfkRltc");
     });
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: HomeScreen(),
     );

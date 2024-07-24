@@ -95,7 +95,7 @@
 // public class ButtonAccessibilityService extends AccessibilityService {
 //     private static final String TAG = "ButtonAccessibilityService";
 //     private boolean buttonPress;
-//     private String targetPackage = "com.example.sandbox_receiver";
+//     private String targetPackage = "com.anywairtv";
 
 
 

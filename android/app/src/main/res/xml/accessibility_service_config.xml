@@ -5,5 +5,5 @@
     android:accessibilityFeedbackType="feedbackSpoken"
     android:notificationTimeout="100"
     android:canRetrieveWindowContent="true"
-    android:packageNames="com.example.sandbox_receiver"
+    android:packageNames="com.anywairtv"
     android:accessibilityFlags="flagDefault" />

@@ -12,7 +12,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 public class MyAccessibilityService extends AccessibilityService {
     private static final String TAG = "MyAccessibilityService";
     private String keySent;
-    private String targetPackage = "com.example.sandbox_receiver";
+    private String targetPackage = "com.anywairtv";
     private AccessibilityNodeInfo lastFocusedNode;
 
     @Override
